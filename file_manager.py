@@ -1,52 +1,56 @@
 import os
 import shutil
+import datetime
 from var import *
 
 os.chdir(Downloads)
+
+recent_time = 1800
+
+
+def get_time_difference(full_path):
+    birth_time = datetime.datetime.fromtimestamp(
+        os.stat(full_path).st_birthtime)
+    now_time = datetime.datetime.now()
+    diff = now_time-birth_time
+
+    return diff.total_seconds()
 
 
 for var in Type_List:
     if not os.path.exists(var):
         os.mkdir(var)
 
+# moves to recent folder
 for path in os.listdir(Downloads):
     full_path = os.path.join(Downloads, path)
     if os.path.isfile(full_path):
         if(full_path.__contains__("/.")):
             # print("Hidden files found: ", full_path)
+            # ignores hidden files
             pass
 
         else:
             ext = os.path.splitext(full_path)[1].lower()
+            # move to recents folder
+            shutil.move(full_path, Recent)
 
-            for l, t in zip(List_List, Type_List):
-                if l.__contains__(ext):
-                    shutil.move(full_path, t)
+# move out of recents folder
+for path in os.listdir(Recent):
+    full_path = os.path.join(Recent, path)
 
-            # elif video_ext.__contains__(ext):
-            #     video_paths.append(full_path)
-            #     shutil.move(full_path, Video)
+    if os.path.isfile(full_path):
+        # if file was created within 30 mins
+        # print(get_time_difference(full_path))
+        if get_time_difference(full_path) >= recent_time:
+            if(full_path.__contains__("/.")):
+                # print("Hidden files found: ", full_path)
+                # ignores hidden files
+                pass
 
-            # elif audio_ext.__contains__(ext):
-            #     audio_paths.append(full_path)
-            #     shutil.move(full_path, Audio)
+            else:
+                ext = os.path.splitext(full_path)[1].lower()
 
-            # elif compressed_ext.__contains__(ext):
-            #     compressed_paths.append(full_path)
-            #     shutil.move(full_path, Compressed)
-
-            # elif adobe_ext.__contains__(ext):
-            #     adobe_paths.append(full_path)
-            #     shutil.move(full_path, Adobe)
-
-            # elif microsoft_ext.__contains__(ext):
-            #     microsoft_paths.append(full_path)
-            #     shutil.move(full_path, Microsoft)
-
-            # elif developer_ext.__contains__(ext):
-            #     developer_paths.append(full_path)
-            #     shutil.move(full_path, Developer)
-
-            # else:
-            #     other_paths.append(full_path)
-            #     shutil.move(full_path, Others)
+                for l, t in zip(List_List, Type_List):
+                    if l.__contains__(ext):
+                        shutil.move(full_path, t)

@@ -1,5 +1,6 @@
 Downloads = '/Users/peter/Downloads/'
 
+Recent = Downloads + 'Recent'
 Image = Downloads + 'Images'
 Video = Downloads + 'Videos'
 Audio = Downloads + 'Audios'
